@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from
 import MyVideos from "./components/MyVideos";
 import AllVideos from "./components/AllVideos";
 import StudentDashboard from "./components/StudentDashboard";
+import AdminRegister from "./components/RegisterAdmin"
+import AdminLogin from "./components/AdminLogin"
 
 const Home = lazy(() => import("./components/Home"));
 const Login = lazy(() => import("./components/Login"));
@@ -24,6 +26,8 @@ function AppRoutes() {
   const [modalType, setModalType] = useState(null); // "login" | "signup" | null
   const location = useLocation();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
 
   // Handle route changes for modals
   useEffect(() => {

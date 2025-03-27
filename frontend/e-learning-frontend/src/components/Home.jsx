@@ -8,6 +8,8 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+  const [adminModalType, setAdminModalType] = useState(null); // "register" | "login" | null
 
   const openLoginModal = () => setIsLoginOpen(true);
   const closeLoginModal = () => setIsLoginOpen(false);
@@ -15,14 +17,21 @@ const HomePage = () => {
   const openSignUpModal = () => setIsSignUpOpen(true);
   const closeSignUpModal = () => setIsSignUpOpen(false);
 
+  const openAdminModal = (type) => {
+    setAdminModalType(type);
+    setIsAdminDropdownOpen(false);
+  };
+  
+  const closeAdminModal = () => setAdminModalType(null);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
       <nav className="w-full bg-white shadow-md p-4 flex justify-between items-center fixed top-0 left-0 z-50">
         <h1 className="text-2xl font-bold text-blue-600">EduFree</h1>
-        <div>
+        <div className="flex items-center space-x-4">
           <button
-            className="px-4 py-2 mr-2 text-blue-600 font-semibold border border-blue-600 rounded-lg transition hover:bg-blue-600 hover:text-white"
+            className="px-4 py-2 text-blue-600 font-semibold border border-blue-600 rounded-lg transition hover:bg-blue-600 hover:text-white"
             onClick={openLoginModal}
           >
             Log In
@@ -33,6 +42,32 @@ const HomePage = () => {
           >
             Sign Up
           </button>
+
+          {/* Admin Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+              className="px-4 py-2 bg-gray-700 text-white font-semibold rounded-lg transition hover:bg-gray-800"
+            >
+              Admin
+            </button>
+            {isAdminDropdownOpen && (
+              <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-40">
+                <button
+                  onClick={() => openAdminModal("register")}
+                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Sign Up
+                </button>
+                <button
+                  onClick={() => openAdminModal("login")}
+                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Login
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -74,11 +109,21 @@ const HomePage = () => {
         </p>
       </footer>
 
-      {/* Login Modal */}
-      <Login isOpen={isLoginOpen} onClose={closeLoginModal} />
-
-      {/* Sign Up Modal */}
-      <SignUp isOpen={isSignUpOpen} onClose={closeSignUpModal} />
+      {/* Modals */}
+      {isLoginOpen && <Login isOpen={isLoginOpen} onClose={closeLoginModal} />}
+      {isSignUpOpen && <SignUp isOpen={isSignUpOpen} onClose={closeSignUpModal} />}
+      
+      {adminModalType === "register" && (
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <AdminRegister isOpen={true} onClose={closeAdminModal} />
+        </React.Suspense>
+      )}
+      
+      {adminModalType === "login" && (
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <AdminLogin isOpen={true} onClose={closeAdminModal} />
+        </React.Suspense>
+      )}
     </div>
   );
 };
